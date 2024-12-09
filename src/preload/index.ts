@@ -1,11 +1,15 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
-if (!process.contextIsolated) {
-  throw new Error('contextIsolation must be enabled in browserWindow')
+contextBridge.exposeInMainWorld('api', {
+  invoke: (channel: string, data?: any) => ipcRenderer.invoke(channel, data)
+})
+
+export type API = {
+  invoke: (channel: string, data?: any) => Promise<any>
 }
 
-try {
-  contextBridge.exposeInMainWorld('context', {})
-} catch (error) {
-  console.log(error)
+declare global {
+  interface Window {
+    api: API
+  }
 }

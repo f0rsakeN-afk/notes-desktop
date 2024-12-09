@@ -1,7 +1,7 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
-import icon from '../../resources/icon.png?asset'
+import { setupIpcHandlers } from './ipc'
 
 function createWindow(): void {
   // Create the browser window.
@@ -9,12 +9,24 @@ function createWindow(): void {
     width: 900,
     height: 670,
     show: false,
+    backgroundColor: '#181c35',
+    minWidth: 400, // Prevent window from becoming too small
+    minHeight: 300,
+    titleBarStyle: 'hiddenInset', // Modern clean look
+    trafficLightPosition: { x: 15, y: 15 },
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    center: true,
+    title: 'Notes',
+    vibrancy: 'under-window',
+    visualEffectState: 'active',
+    roundedCorners: true, // Modern rounded corners,
+    icon: join(__dirname, '../renderer/src/assets/logo.png'),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
-      contextIsolation: true
+      contextIsolation: true,
+      //enableRemoteModule: false, // Security best practice
+      nodeIntegration: false // Security best practice
     }
   })
 
@@ -54,7 +66,7 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
-
+  setupIpcHandlers()
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.

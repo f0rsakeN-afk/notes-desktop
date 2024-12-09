@@ -15,8 +15,126 @@
 
     @apply bg-transparent;
 
-    @apply font-mono antialiased text-white;
+    @apply font-mono antialiased;
 
     @apply overflow-hidden;
   }
+}
+
+
+.ProseMirror {
+  caret-color: white;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  -webkit-font-smoothing: antialiased;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 0;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding: 0 1rem;
+}
+
+.ProseMirror blockquote {
+  border-left: 2px solid #374151;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 1rem;
+}
+
+.ProseMirror code {
+  background-color: rgba(97, 97, 97, 0.1);
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+}
+
+.ProseMirror pre {
+  background: #0D0D0D;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.ProseMirror pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
+
+.ProseMirror hr {
+  border: none;
+  border-top: 2px solid #374151;
+  margin: 2rem 0;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #4B5563;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+
+/* Custom scrollbar styles for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 #27272a;
+}
+
+/* Custom scrollbar styles for Webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #27272a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
+
+/* Optional: Hide scrollbar when not hovering */
+.scrollbar-hide-on-leave {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide-on-leave::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide-on-leave:hover {
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+.scrollbar-hide-on-leave:hover::-webkit-scrollbar {
+  display: block;
 }
