@@ -1,5 +1,11 @@
+import Layout from './components/Layout'
+
 const App = () => {
-  return <div className="bg-red-500 text-5xl">App</div>
+  return (
+    <>
+      <Layout />
+    </>
+  )
 }
 
 export default App
