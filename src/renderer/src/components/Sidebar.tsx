@@ -88,7 +88,7 @@ const Sidebar = () => {
                 activeNoteId === note.id && 'bg-zinc-800/75'
               )}
             >
-              <h3 className="font-medium text-zinc-200 truncate">{note.title || 'Untitled'}</h3>
+              <h3 className="font-medium text-zinc-200 truncate">{note.title || 'New Note'}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs text-zinc-400">
                   {format(new Date(note.updated_at), 'MMM dd, yyyy HH:mm')}

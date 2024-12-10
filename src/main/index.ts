@@ -10,17 +10,18 @@ function createWindow(): void {
     height: 670,
     show: false,
     backgroundColor: '#181c35',
-    minWidth: 400, // Prevent window from becoming too small
+    minWidth: 400,
     minHeight: 300,
-    titleBarStyle: 'hiddenInset', // Modern clean look
+    titleBarStyle: 'hiddenInset',
     trafficLightPosition: { x: 15, y: 15 },
     autoHideMenuBar: true,
     center: true,
+    //frame: false,
     title: 'Notes',
     vibrancy: 'under-window',
     visualEffectState: 'active',
-    roundedCorners: true, // Modern rounded corners,
-    icon: join(__dirname, '../renderer/src/assets/logo.png'),
+    roundedCorners: true,
+    icon: join(__dirname, '../../resources/logo.png'),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,

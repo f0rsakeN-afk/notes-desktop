@@ -31,7 +31,7 @@ export const loadNotes = createAsyncThunk('notes/loadNotes', async () => {
 export const createNote = createAsyncThunk('notes/createNote', async () => {
   const newNote: NoteTypes = {
     id: nanoid(),
-    title: 'Untitled',
+    title: 'New Note',
     content: '',
     created_at: new Date(),
     updated_at: new Date()
