@@ -32,7 +32,6 @@ const ToolbarButton = ({ onClick, isActive, disabled, children }: ToolbarButtonP
     <button
       onClick={(e) => {
         e.preventDefault()
-        e.stopPropagation()
         onClick()
       }}
       disabled={disabled}
@@ -91,32 +90,39 @@ const Content = () => {
     ],
     content: activeNote?.content,
     editable: true,
-    autofocus: false,
+    autofocus: true,
     onCreate: ({ editor }) => {
       editor.setOptions({ editable: true })
+      editor.commands.focus('end')
     },
-    onFocus: ({ event }) => {
-      event.preventDefault()
-      event.stopPropagation()
+    onFocus: ({ editor }) => {
+      editor.commands.focus('end')
     }
   })
 
+  // Keep focus at the end when content changes
   useEffect(() => {
     if (editor && activeNote) {
       if (editor.getHTML() !== activeNote.content) {
         editor.commands.setContent(activeNote.content || '')
+        setTimeout(() => {
+          editor.commands.focus('end')
+        }, 0)
       }
     }
   }, [activeNote, editor])
 
+  // Maintain focus at end after updates
   useEffect(() => {
     if (!editor) {
       return
     }
 
-    const updateListener = editor.on('update', ({ editor }) => {
+    const updateListener = editor.on('update', () => {
       debouncedUpdate(editor.getHTML())
-      //editor.commands.focus('end')
+      setTimeout(() => {
+        editor.commands.focus('end')
+      }, 0)
     })
 
     return () => {
@@ -125,10 +131,15 @@ const Content = () => {
     }
   }, [editor, debouncedUpdate])
 
+  // Auto-focus at end when editor is ready
+  useEffect(() => {
+    if (editor) {
+      editor.commands.focus('end')
+    }
+  }, [editor])
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
-    e.stopPropagation()
-
     const newTitle = e.target.value
     if (activeNoteId && activeNote) {
       dispatch(
@@ -147,10 +158,9 @@ const Content = () => {
   }
 
   const handleTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    e.stopPropagation()
-    // Prevent enter key from creating a new line in the editor
     if (e.key === 'Enter') {
       e.preventDefault()
+      editor?.commands.focus('end')
     }
   }
 
@@ -184,25 +194,33 @@ const Content = () => {
 
   return (
     <div className="flex-1 flex flex-col bg-zinc-900">
-      {/* Toolbar */}
       <div className="h-16 border-b border-zinc-800 px-6 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleBold().run()}
+            onClick={() => {
+              editor?.chain().focus().toggleBold().run()
+              editor?.commands.focus('end')
+            }}
             isActive={editor?.isActive('bold')}
           >
             <Bold size={18} />
           </ToolbarButton>
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleItalic().run()}
+            onClick={() => {
+              editor?.chain().focus().toggleItalic().run()
+              editor?.commands.focus('end')
+            }}
             isActive={editor?.isActive('italic')}
           >
             <Italic size={18} />
           </ToolbarButton>
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleStrike().run()}
+            onClick={() => {
+              editor?.chain().focus().toggleStrike().run()
+              editor?.commands.focus('end')
+            }}
             isActive={editor?.isActive('strike')}
           >
             <Strikethrough size={18} />
@@ -211,48 +229,71 @@ const Content = () => {
           <div className="h-6 w-px bg-zinc-800 mx-2" />
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+            onClick={() => {
+              editor?.chain().focus().toggleHeading({ level: 2 }).run()
+              editor?.commands.focus('end')
+            }}
             isActive={editor?.isActive('heading', { level: 2 })}
           >
             <Heading size={18} />
           </ToolbarButton>
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleBulletList().run()}
+            onClick={() => {
+              editor?.chain().focus().toggleBulletList().run()
+              editor?.commands.focus('end')
+            }}
             isActive={editor?.isActive('bulletList')}
           >
             <List size={18} />
           </ToolbarButton>
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+            onClick={() => {
+              editor?.chain().focus().toggleOrderedList().run()
+              editor?.commands.focus('end')
+            }}
             isActive={editor?.isActive('orderedList')}
           >
             <ListOrdered size={18} />
           </ToolbarButton>
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+            onClick={() => {
+              editor?.chain().focus().toggleBlockquote().run()
+              editor?.commands.focus('end')
+            }}
             isActive={editor?.isActive('blockquote')}
           >
             <Quote size={18} />
           </ToolbarButton>
 
-          <ToolbarButton onClick={() => editor?.chain().focus().setHorizontalRule().run()}>
+          <ToolbarButton
+            onClick={() => {
+              editor?.chain().focus().setHorizontalRule().run()
+              editor?.commands.focus('end')
+            }}
+          >
             <Minus size={18} />
           </ToolbarButton>
 
           <div className="h-6 w-px bg-zinc-800 mx-2" />
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().undo().run()}
+            onClick={() => {
+              editor?.chain().focus().undo().run()
+              editor?.commands.focus('end')
+            }}
             disabled={!editor?.can().undo()}
           >
             <Undo size={18} />
           </ToolbarButton>
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().redo().run()}
+            onClick={() => {
+              editor?.chain().focus().redo().run()
+              editor?.commands.focus('end')
+            }}
             disabled={!editor?.can().redo()}
           >
             <Redo size={18} />
@@ -269,16 +310,14 @@ const Content = () => {
         </button>
       </div>
 
-      {/* Editor */}
       <div className="flex-1 overflow-auto">
-        <div className=" mx-auto p-8">
+        <div className="mx-auto p-8">
           <div className="mb-8">
             <input
               type="text"
               value={activeNote.title || ''}
               onChange={handleTitleChange}
               onKeyDown={handleTitleKeyDown}
-              onClick={(e) => e.stopPropagation()}
               placeholder="Note Title"
               className="w-full text-3xl font-bold bg-transparent border-none
                        text-zinc-100 placeholder-zinc-600 focus:outline-none"
@@ -288,8 +327,8 @@ const Content = () => {
           </div>
           <EditorContent
             editor={editor}
-            className="prose prose-invert prose-zinc max-w-none"
-            onClick={(e) => e.stopPropagation()}
+            className="prose prose-invert prose-zinc max-w-none focus:outline-none"
+            onClick={() => editor?.commands.focus('end')}
           />
         </div>
       </div>
