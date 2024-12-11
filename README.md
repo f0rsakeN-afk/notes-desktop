@@ -3,6 +3,7 @@
 A minimalist, cross-platform desktop notes application built with Electron, React, and TypeScript. Features a clean interface for managing and editing notes with rich text support.
 
 ![Notes App Screenshot](./src/renderer/src/assets/s1.png)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zomNLHoWFzM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Features
 
