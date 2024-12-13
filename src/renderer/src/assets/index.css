@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 .ProseMirror {
   caret-color: white;
   word-wrap: break-word;
@@ -46,7 +43,7 @@
 }
 
 .ProseMirror pre {
-  background: #0D0D0D;
+  background: #0d0d0d;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
 }
@@ -70,13 +67,12 @@
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {
-  color: #4B5563;
+  color: #4b5563;
   content: attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;
 }
-
 
 /* Custom scrollbar styles for Firefox */
 * {
@@ -120,4 +116,34 @@
 
 .scrollbar-hide-on-leave:hover::-webkit-scrollbar {
   display: block;
+}
+
+/* Heading styles */
+h1 {
+  font-size: 2em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+/* Code styles */
+code {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+/* Link styles */
+a {
+  color: #60a5fa; /* blue-400 */
+  text-decoration: underline;
+  &:hover {
+    color: #93c5fd; /* blue-300 */
+  }
 }
