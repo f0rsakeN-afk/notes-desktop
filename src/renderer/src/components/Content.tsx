@@ -2,21 +2,30 @@ import { useAppDispatch, useAppSelector } from '@renderer/hooks/store'
 import { deleteNote, updateNote } from '@renderer/store/noteSlice'
 import { cn } from '@renderer/utils'
 import Placeholder from '@tiptap/extension-placeholder'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Heading from '@tiptap/extension-heading'
+import Link from '@tiptap/extension-link'
+import Code from '@tiptap/extension-code'
 import debounce from 'lodash.debounce'
 import {
   Bold,
-  Heading,
   Italic,
   List,
+  ListChecks,
   ListOrdered,
   Minus,
   Quote,
   Redo,
   Strikethrough,
   Trash2,
-  Undo
+  Undo,
+  Link2,
+  Heading1,
+  Heading2,
+  Code as CodeIcon
 } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 
@@ -36,7 +45,7 @@ const ToolbarButton = ({ onClick, isActive, disabled, children }: ToolbarButtonP
       }}
       disabled={disabled}
       className={cn(
-        'p-2 text-sm rounded-lg transition-colors select-none', // Added select-none only for buttons
+        'p-2 text-sm rounded-lg transition-colors select-none',
         isActive ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
@@ -85,7 +94,18 @@ const Content = () => {
       }),
       Placeholder.configure({
         placeholder: 'Start writing...'
-      })
+      }),
+      TaskList,
+      TaskItem.configure({
+        nested: true
+      }),
+      Heading.configure({
+        levels: [1, 2]
+      }),
+      Link.configure({
+        openOnClick: false
+      }),
+      Code
     ],
     content: activeNote?.content,
     editable: true,
@@ -198,10 +218,10 @@ const Content = () => {
           <div className="h-6 w-px bg-zinc-800 mx-2" />
 
           <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-            isActive={editor?.isActive('heading', { level: 2 })}
+            onClick={() => editor?.chain().focus().toggleTaskList().run()}
+            isActive={editor?.isActive('taskList')}
           >
-            <Heading size={18} />
+            <ListChecks size={18} />
           </ToolbarButton>
 
           <ToolbarButton
@@ -227,6 +247,41 @@ const Content = () => {
 
           <ToolbarButton onClick={() => editor?.chain().focus().setHorizontalRule().run()}>
             <Minus size={18} />
+          </ToolbarButton>
+
+          <div className="h-6 w-px bg-zinc-800 mx-2" />
+
+          <ToolbarButton
+            onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+            isActive={editor?.isActive('heading', { level: 1 })}
+          >
+            <Heading1 size={18} />
+          </ToolbarButton>
+
+          <ToolbarButton
+            onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+            isActive={editor?.isActive('heading', { level: 2 })}
+          >
+            <Heading2 size={18} />
+          </ToolbarButton>
+
+          <ToolbarButton
+            onClick={() => {
+              const url = window.prompt('Enter URL')
+              if (url) {
+                editor?.chain().focus().setLink({ href: url }).run()
+              }
+            }}
+            isActive={editor?.isActive('link')}
+          >
+            <Link2 size={18} />
+          </ToolbarButton>
+
+          <ToolbarButton
+            onClick={() => editor?.chain().focus().toggleCode().run()}
+            isActive={editor?.isActive('code')}
+          >
+            <CodeIcon size={18} />
           </ToolbarButton>
 
           <div className="h-6 w-px bg-zinc-800 mx-2" />
