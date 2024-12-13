@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { NoteTypes } from '@renderer/types'
 import { nanoid } from 'nanoid'
 import { api } from '@renderer/utils/api'
+import { NOTE_COLORS } from '@renderer/utils/colors'
 
 interface NotesState {
   notes: NoteTypes[]
@@ -28,13 +29,22 @@ export const loadNotes = createAsyncThunk('notes/loadNotes', async () => {
   return response
 })
 
-export const createNote = createAsyncThunk('notes/createNote', async () => {
+export const createNote = createAsyncThunk('notes/createNote', async (_, { getState }) => {
+  const state = getState() as { notes: NotesState }
+  const existingColors = state.notes.notes.map((note) => note.color)
+  const availableColors = NOTE_COLORS.filter((color) => !existingColors.includes(color))
+  const color =
+    availableColors.length > 0
+      ? availableColors[Math.floor(Math.random() * availableColors.length)]
+      : NOTE_COLORS[Math.floor(Math.random() * NOTE_COLORS.length)]
+
   const newNote: NoteTypes = {
     id: nanoid(),
     title: 'New Note',
     content: '',
     created_at: new Date(),
-    updated_at: new Date()
+    updated_at: new Date(),
+    color
   }
   await api.saveNote(newNote)
   return newNote
