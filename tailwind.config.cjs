@@ -3,6 +3,38 @@ module.exports = {
   content: ['./src/renderer/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      colors: {
+        violet: {
+          350: '#9f7aea' // Custom lavender
+        },
+        rose: {
+          350: '#ff8a8a' // Custom coral
+        },
+        amber: {
+          350: '#ffd03d' // Custom gold
+        },
+        emerald: {
+          350: '#34d399' // Custom mint
+        },
+        sky: {
+          350: '#38bdf8' // Custom azure
+        },
+        fuchsia: {
+          350: '#f472b6' // Custom magenta
+        },
+        teal: {
+          350: '#2dd4bf' // Custom turquoise
+        },
+        indigo: {
+          350: '#818cf8' // Custom periwinkle
+        },
+        orange: {
+          350: '#fb923c' // Custom peach
+        },
+        purple: {
+          350: '#c084fc' // Custom orchid
+        }
+      },
       typography: (theme) => ({
         invert: {
           css: {

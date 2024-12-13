@@ -6,12 +6,12 @@ import { setupIpcHandlers } from './ipc'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 800,
     show: false,
     backgroundColor: '#181c35',
-    minWidth: 400,
-    minHeight: 300,
+    minWidth: 900,
+    minHeight: 600,
     titleBarStyle: 'hiddenInset',
     trafficLightPosition: { x: 15, y: 15 },
     autoHideMenuBar: true,
