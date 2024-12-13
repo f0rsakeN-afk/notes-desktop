@@ -4,4 +4,5 @@ export interface NoteTypes {
   content: string
   created_at: Date
   updated_at: Date
+  color?: string
 }
