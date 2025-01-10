@@ -37,6 +37,7 @@
     "electron-updater": "^6.1.7",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.468.0",
+    "motion": "^11.17.0",
     "nanoid": "^5.0.9",
     "react-redux": "^9.1.2",
     "tailwind-scrollbar": "^3.1.0"

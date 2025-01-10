@@ -1,12 +1,18 @@
+import { motion } from 'motion/react'
 import Content from './Content'
 import Sidebar from './Sidebar'
 
 const Layout = () => {
   return (
-    <div className="flex h-screen bg-transparent overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="flex h-screen bg-transparent overflow-hidden"
+    >
       <Sidebar />
       <Content />
-    </div>
+    </motion.div>
   )
 }
 

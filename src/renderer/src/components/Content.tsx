@@ -1,18 +1,23 @@
 import { useAppDispatch, useAppSelector } from '@renderer/hooks/store'
 import { deleteNote, updateNote } from '@renderer/store/noteSlice'
 import { cn } from '@renderer/utils'
-import Placeholder from '@tiptap/extension-placeholder'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import { EditorContent, useEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+import Code from '@tiptap/extension-code'
 import Heading from '@tiptap/extension-heading'
 import Link from '@tiptap/extension-link'
-import Code from '@tiptap/extension-code'
+import Placeholder from '@tiptap/extension-placeholder'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
+import { EditorContent, useEditor } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import { motion, AnimatePresence } from 'framer-motion'
 import debounce from 'lodash.debounce'
 import {
   Bold,
+  Code as CodeIcon,
+  Heading1,
+  Heading2,
   Italic,
+  Link2,
   List,
   ListChecks,
   ListOrdered,
@@ -21,11 +26,7 @@ import {
   Redo,
   Strikethrough,
   Trash2,
-  Undo,
-  Link2,
-  Heading1,
-  Heading2,
-  Code as CodeIcon
+  Undo
 } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 
@@ -38,7 +39,9 @@ interface ToolbarButtonProps {
 
 const ToolbarButton = ({ onClick, isActive, disabled, children }: ToolbarButtonProps) => {
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
       onClick={(e) => {
         e.preventDefault()
         onClick()
@@ -51,8 +54,14 @@ const ToolbarButton = ({ onClick, isActive, disabled, children }: ToolbarButtonP
       )}
     >
       {children}
-    </button>
+    </motion.button>
   )
+}
+
+const contentVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 }
 }
 
 const Content = () => {
@@ -176,145 +185,186 @@ const Content = () => {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-zinc-900">
-        <div className="text-zinc-400">Loading...</div>
-      </div>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={contentVariants}
+        className="flex-1 flex items-center justify-center bg-zinc-900"
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="text-zinc-400"
+        >
+          Loading...
+        </motion.div>
+      </motion.div>
     )
   }
 
   if (!activeNote) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-zinc-900">
-        <p className="text-zinc-500">Select a note or create a new one</p>
-      </div>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={contentVariants}
+        className="flex-1 flex items-center justify-center bg-zinc-900"
+      >
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-zinc-500"
+        >
+          Select a note or create a new one
+        </motion.p>
+      </motion.div>
     )
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-zinc-900">
-      <div className="h-16 border-b border-zinc-800 px-6 flex items-center justify-between select-none">
-        <div className="flex items-center space-x-2">
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleBold().run()}
-            isActive={editor?.isActive('bold')}
-          >
-            <Bold size={18} />
-          </ToolbarButton>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={contentVariants}
+      className="flex-1 flex flex-col bg-zinc-900"
+    >
+      <motion.div
+        layout
+        className="h-16 border-b border-zinc-800 px-6 flex items-center justify-between select-none"
+      >
+        <motion.div layout className="flex items-center space-x-2">
+          <AnimatePresence mode="popLayout">
+            <motion.div layout className="flex items-center space-x-2">
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleBold().run()}
+                isActive={editor?.isActive('bold')}
+              >
+                <Bold size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleItalic().run()}
-            isActive={editor?.isActive('italic')}
-          >
-            <Italic size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleItalic().run()}
+                isActive={editor?.isActive('italic')}
+              >
+                <Italic size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleStrike().run()}
-            isActive={editor?.isActive('strike')}
-          >
-            <Strikethrough size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleStrike().run()}
+                isActive={editor?.isActive('strike')}
+              >
+                <Strikethrough size={18} />
+              </ToolbarButton>
 
-          <div className="h-6 w-px bg-zinc-800 mx-2" />
+              <motion.div className="h-6 w-px bg-zinc-800 mx-2" />
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleTaskList().run()}
-            isActive={editor?.isActive('taskList')}
-          >
-            <ListChecks size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleTaskList().run()}
+                isActive={editor?.isActive('taskList')}
+              >
+                <ListChecks size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleBulletList().run()}
-            isActive={editor?.isActive('bulletList')}
-          >
-            <List size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                isActive={editor?.isActive('bulletList')}
+              >
+                <List size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-            isActive={editor?.isActive('orderedList')}
-          >
-            <ListOrdered size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+                isActive={editor?.isActive('orderedList')}
+              >
+                <ListOrdered size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-            isActive={editor?.isActive('blockquote')}
-          >
-            <Quote size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+                isActive={editor?.isActive('blockquote')}
+              >
+                <Quote size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton onClick={() => editor?.chain().focus().setHorizontalRule().run()}>
-            <Minus size={18} />
-          </ToolbarButton>
+              <ToolbarButton onClick={() => editor?.chain().focus().setHorizontalRule().run()}>
+                <Minus size={18} />
+              </ToolbarButton>
 
-          <div className="h-6 w-px bg-zinc-800 mx-2" />
+              <motion.div className="h-6 w-px bg-zinc-800 mx-2" />
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-            isActive={editor?.isActive('heading', { level: 1 })}
-          >
-            <Heading1 size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+                isActive={editor?.isActive('heading', { level: 1 })}
+              >
+                <Heading1 size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-            isActive={editor?.isActive('heading', { level: 2 })}
-          >
-            <Heading2 size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+                isActive={editor?.isActive('heading', { level: 2 })}
+              >
+                <Heading2 size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => {
-              const url = window.prompt('Enter URL')
-              if (url) {
-                editor?.chain().focus().setLink({ href: url }).run()
-              }
-            }}
-            isActive={editor?.isActive('link')}
-          >
-            <Link2 size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => {
+                  const url = window.prompt('Enter URL')
+                  if (url) {
+                    editor?.chain().focus().setLink({ href: url }).run()
+                  }
+                }}
+                isActive={editor?.isActive('link')}
+              >
+                <Link2 size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().toggleCode().run()}
-            isActive={editor?.isActive('code')}
-          >
-            <CodeIcon size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().toggleCode().run()}
+                isActive={editor?.isActive('code')}
+              >
+                <CodeIcon size={18} />
+              </ToolbarButton>
 
-          <div className="h-6 w-px bg-zinc-800 mx-2" />
+              <motion.div className="h-6 w-px bg-zinc-800 mx-2" />
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().undo().run()}
-            disabled={!editor?.can().undo()}
-          >
-            <Undo size={18} />
-          </ToolbarButton>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().undo().run()}
+                disabled={!editor?.can().undo()}
+              >
+                <Undo size={18} />
+              </ToolbarButton>
 
-          <ToolbarButton
-            onClick={() => editor?.chain().focus().redo().run()}
-            disabled={!editor?.can().redo()}
-          >
-            <Redo size={18} />
-          </ToolbarButton>
-        </div>
+              <ToolbarButton
+                onClick={() => editor?.chain().focus().redo().run()}
+                disabled={!editor?.can().redo()}
+              >
+                <Redo size={18} />
+              </ToolbarButton>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
 
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleDeleteNote}
           className="px-4 py-2 text-sm flex items-center gap-2 text-red-400
                    hover:bg-red-950 hover:text-red-300 rounded-lg transition-colors select-none"
         >
           <Trash2 size={18} />
           Delete
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
-      <div className="flex-1 overflow-auto">
-        <div className="mx-auto p-8">
-          <div className="mb-8">
-            <input
+      <motion.div layout className="flex-1 overflow-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mx-auto p-8"
+        >
+          <motion.div layout className="mb-8">
+            <motion.input
               ref={titleInputRef}
               type="text"
               value={activeNote.title || ''}
@@ -326,16 +376,22 @@ const Content = () => {
               autoComplete="off"
               spellCheck="false"
             />
-          </div>
-          <div onClick={handleEditorClick}>
+          </motion.div>
+          <motion.div
+            layout
+            onClick={handleEditorClick}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
             <EditorContent
               editor={editor}
               className="prose prose-invert prose-zinc max-w-none focus:outline-none"
             />
-          </div>
-        </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   )
 }
 
